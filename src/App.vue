@@ -1,46 +1,65 @@
 <template>
-  <div id="app">
-  
-  </div>
+	<div id="app">
+	
+	</div>
 </template>
 
 <script>
 import * as THREE from 'three';
-// var THREE = require('three');
+import Stats from 'stats.js'
+export default {
+	name: 'app',
+	data() {
+		return {
+		}
+	},
+	components: {
+	}
+};
+var stats = new Stats();
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-var scene = new THREE.Scene();//生成场景
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );//生成相机
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+document.body.appendChild(stats.dom);
+var geometry = new THREE.BoxGeometry(1, 1, 1);
+var material = new THREE.MeshBasicMaterial({ color: 0x00ff66 });
+var cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
 
-var renderer = new THREE.WebGLRenderer();//生成渲染器
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.style.margin="0px";
-document.body.style.overflow="hidden";
-renderer.domElement.style.height="100%";
-renderer.domElement.style.width="100%";
-document.body.appendChild( renderer.domElement );
+console.log(cube.material);
 
-camera.position.z = 25;//摄像机Z轴距离
+camera.position.z = 5;
 
-var material = new THREE.LineBasicMaterial({ color: 0xffffff });
-var geometry = new THREE.Geometry();
-geometry.vertices.push(new THREE.Vector3(-25, 0, 0));
-// geometry.vertices.push(new THREE.Vector3(0, 10, 0));
-geometry.vertices.push(new THREE.Vector3(25, 0, 0));
+var render = function () {
+	requestAnimationFrame(render);
 
-var geometry1 = new THREE.Geometry();
-geometry1.vertices.push(new THREE.Vector3(0, 20, 0));
-geometry1.vertices.push(new THREE.Vector3(0, -20, 0));
+	cube.rotation.x += 0.1;
+	cube.rotation.y += 0.1;
+	cube.material= new THREE.MeshBasicMaterial({ color: "#"+ InitColor() });
+	renderer.render(scene, camera);
+	stats.update();
+};
 
-var line = new THREE.Line(geometry, material);
-var line1 = new THREE.Line(geometry1, material);
+render();
+function InitColor() {
+	var colorStr = "";
+	var randomArr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+	for (var i = 0; i < 6; i++) {
+		//15是范围上限，0是范围下限，两个函数保证产生出来的随机数是整数  
+		colorStr += randomArr[Math.ceil(Math.random() * (15 - 0) + 0)];
+	}
+	return colorStr;
+}
 
-scene.add(line);
-scene.add(line1);
-
-renderer.render(scene, camera);
 
 </script>
 
 <style>
-html,body { overflow-y:hidden; }
+body {
+	margin: 0px;
+	overflow: hidden;
+}
 </style>
